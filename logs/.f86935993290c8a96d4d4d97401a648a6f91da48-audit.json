@@ -1,0 +1,14 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/tiago/ws/pluto/keplersampleapp/logs/.f86935993290c8a96d4d4d97401a648a6f91da48-audit.json",
+    "files": [
+        {
+            "date": 1709121567462,
+            "name": "/Users/tiago/ws/pluto/keplersampleapp/logs/keplerCliNative-2024-02-28.log",
+            "hash": "18d44b9fcaa7755c88b35aa3f8082114"
+        }
+    ]
+}
