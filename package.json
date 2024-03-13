@@ -13,11 +13,11 @@
     "lint:fix": "eslint src tst --ext .ts,.tsx --fix",
     "compile": "tsc -p tsconfig.json",
     "build": "npm run compile",
-    "release": "npm-run-all lint test compile"
+    "release": "npm-run-all lint test compile",
+    "kepler:arm:debug": "kepler run-kepler build/vega-tv2023-armv7-debug/keplersampleapp_armv7.vpkg com.amazon.keplersampleapp.main -s"
   },
   "dependencies": {
-    "@amzn/react-native-kepler": "~2.0.0",
-    "@tanstack/react-query": "5.24.1",
+    "@amzn/react-native-kepler": "2.0.1708631801",
     "react": "18.2.0",
     "react-native": "0.72.0"
   },
