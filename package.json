@@ -14,7 +14,7 @@
     "compile": "tsc -p tsconfig.json",
     "build": "npm run compile",
     "release": "npm-run-all lint test compile",
-    "kepler:arm:debug": "kepler run-kepler build/vega-tv2023-armv7-debug/keplersampleapp_armv7.vpkg com.amazon.keplersampleapp.main -s"
+    "kepler-on-arm:debug": "kepler run-kepler build/vega-tv2023-armv7-debug/keplersampleapp_armv7.vpkg com.amazon.keplersampleapp.main -s"
   },
   "dependencies": {
     "@amzn/react-native-kepler": "2.0.1708631801",
@@ -31,7 +31,11 @@
     "@amzn/react-navigation__stack": "~2.0.0",
     "@amzn/react-navigation__drawer": "~2.0.0",
     "@amzn/react-native-screens": "~2.0.0",
-    "react-native-gesture-handler": "~2.13.0",
+    "react-native-gesture-handler": "2.16.0",
+    "@amzn/react-native-kepler": "~2.0.0",
+    "@amzn/react-native-svg": "~2.0.0",
+    "@amzn/react-native-reanimated": "~2.0.0",
+
     "@babel/core": "^7.20.0",
     "@babel/runtime": "^7.20.0",
     "@babel/traverse": "7.22.8",

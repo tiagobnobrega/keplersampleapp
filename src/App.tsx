@@ -4,7 +4,7 @@
  * PROPRIETARY/CONFIDENTIAL.  USE IS SUBJECT TO LICENSE TERMS.
  */
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {NavigationContainer} from '@amzn/react-navigation__native';
 import {
@@ -92,8 +92,22 @@ const ScreenD2 = ({navigation}: DrawerScreenProps<any>) => {
 };
 
 const DrawerStack = () => {
+  const styles = getStyles();
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: false,
+        drawerType: 'permanent',
+        drawerStyle: styles.drawerStyle,
+        drawerContentStyle: {
+          backgroundColor: '#f0f',
+        },
+        sceneContainerStyle: {
+          marginTop: 200,
+          flex: 1,
+          backgroundColor: '#ff0',
+        },
+      }}>
       <Drawer.Screen name={'D1'} component={ScreenD1} />
       <Drawer.Screen name={'D2'} component={ScreenD2} />
     </Drawer.Navigator>
@@ -101,23 +115,82 @@ const DrawerStack = () => {
 };
 
 export const App = () => {
+  const styles = getStyles();
+  const [isTransparent, setTransparent] = useState(true);
+  const [isModal, setModal] = useState(false);
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="A"
-          component={ScreenA}
-          options={{title: 'screen A'}}
-        />
-        <Stack.Screen name="B" component={ScreenB} />
-        <Stack.Screen name="D" component={DrawerStack} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={styles.wrapper}>
+      <View style={styles.background}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            setTransparent(!isTransparent);
+          }}>
+          <Text style={[styles.buttonLabel]}>
+            toggle transparent card style
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            setModal(!isModal);
+          }}>
+          <Text style={[styles.buttonLabel]}>toggle presentation modal</Text>
+        </TouchableOpacity>
+        <Text style={[styles.title, {marginTop: 25}]}>
+          This should be fully visible
+        </Text>
+      </View>
+      <View style={styles.navContainer}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              cardStyle: {
+                backgroundColor: isTransparent
+                  ? 'transparent'
+                  : 'rgba(255,0,0,0.1)',
+              },
+              presentation: isModal ? 'modal' : 'card',
+            }}>
+            <Stack.Screen
+              name="A"
+              component={ScreenA}
+              options={{title: 'screen A'}}
+            />
+            <Stack.Screen name="B" component={ScreenB} />
+            <Stack.Screen name="D" component={DrawerStack} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    </View>
   );
 };
 
 const getStyles = () =>
   StyleSheet.create({
+    wrapper: {
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+    },
+    background: {
+      backgroundColor: '#24db92',
+      width: '100%',
+      height: '100%',
+      alignItems: 'center',
+    },
+    navContainer: {
+      width: '100%',
+      height: '90%',
+      position: 'absolute',
+      bottom: 0,
+    },
+    drawerStyle: {
+      marginTop: 200,
+      backgroundColor: 'transparent',
+      width: 80,
+    },
     container: {
       backgroundColor: '#ddd',
       width: '100%',
