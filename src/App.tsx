@@ -4,95 +4,49 @@
  * PROPRIETARY/CONFIDENTIAL.  USE IS SUBJECT TO LICENSE TERMS.
  */
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {GlobalNav} from './components/navigation/GlobalNav';
+import {TVFocusGuideView} from '@amzn/react-native-kepler';
 
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
-
-type TScreen = StackScreenProps<any> & {title: string};
-const Screen = ({title, navigation}: TScreen) => {
+export const App = () => {
   const styles = getStyles();
-
+  const [dynamicSize, setDynamicSize] = useState(200);
   return (
     <View style={styles.container}>
       <GlobalNav />
-      <View style={styles.ctaContainer}>
+      {/*<View style={styles.bgLine} />*/}
+      {/*@ts-expect-error TVFocusGuideView types are broken*/}
+      <TVFocusGuideView autoFocus={true} style={styles.ctaContainer}>
         {[...Array(10).keys()].map((item, index) => {
+          const operation = Math.random() > 0.5 ? 'add' : 'subtract';
+          const amount = operation === 'add' ? 100 : -100;
           return (
-            <TouchableOpacity onPress={() => null}>
-              <Text style={styles.title}>Item: {index}</Text>
+            <TouchableOpacity
+              style={styles.cta}
+              onPress={() => {
+                setDynamicSize(dynamicSize + amount);
+              }}>
+              <Text style={styles.title}>
+                {operation}: {amount}
+              </Text>
             </TouchableOpacity>
           );
         })}
+      </TVFocusGuideView>
+      <View style={[styles.dynamic, {width: dynamicSize}]}>
+        {/*@ts-expect-error TVFocusGuideView types are broken*/}
+        <TVFocusGuideView autoFocus={true} style={styles.ctaContainer}>
+          {[...Array(10).keys()].map((item, index) => {
+            return (
+              <TouchableOpacity style={styles.cta} onPress={() => null}>
+                <Text style={styles.title}>Item: {index}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </TVFocusGuideView>
       </View>
     </View>
-  );
-};
-
-const ScreenA = (props: StackScreenProps<any>) => {
-  return <Screen title={'Screen A'} {...props} />;
-};
-
-const ScreenB = (props: StackScreenProps<any>) => {
-  return <Screen title={'Screen B'} {...props} />;
-};
-
-const ScreenD1 = ({navigation}: DrawerScreenProps<any>) => {
-  const styles = getStyles();
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>'Screen D1'</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate('A');
-        }}>
-        <Text style={styles.buttonLabel}>Screen A</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const ScreenD2 = ({navigation}: DrawerScreenProps<any>) => {
-  const styles = getStyles();
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>'Screen D1'</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate('A');
-        }}>
-        <Text style={styles.buttonLabel}>Screen A</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const DrawerStack = () => {
-  return (
-    <Drawer.Navigator>
-      <Drawer.Screen name={'D1'} component={ScreenD1} />
-      <Drawer.Screen name={'D2'} component={ScreenD2} />
-    </Drawer.Navigator>
-  );
-};
-
-export const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="A"
-          component={ScreenA}
-          options={{title: 'screen A'}}
-        />
-        <Stack.Screen name="B" component={ScreenB} />
-        <Stack.Screen name="D" component={DrawerStack} />
-      </Stack.Navigator>
-    </NavigationContainer>
   );
 };
 
@@ -117,5 +71,20 @@ const getStyles = () =>
       padding: 8,
       backgroundColor: '#dddd50',
       marginVertical: 10,
+    },
+    bgLine: {
+      position: 'absolute',
+      left: 0,
+      bottom: 20,
+      height: 200,
+      width: '100%',
+      backgroundColor: '#F00',
+    },
+    dynamic: {
+      position: 'absolute',
+      right: 150,
+      bottom: 20,
+      height: '100%',
+      backgroundColor: '#00F',
     },
   });

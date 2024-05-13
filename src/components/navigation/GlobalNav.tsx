@@ -1,12 +1,6 @@
 import {Sidebar, type SidebarMode} from './Sidebar';
 import {scaleSize} from '../shared';
-import {
-  Image,
-  type ImageSourcePropType,
-  StyleSheet,
-  type TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, type ImageSourcePropType, StyleSheet, View} from 'react-native';
 import {STYLE} from '../constants';
 
 // @ts-ignore
@@ -51,8 +45,7 @@ import homeBlack from '../../assets/home-black.png';
 import homeGrey from '../../assets/home-grey.png';
 // @ts-ignore
 import homeWhite from '../../assets/home-white.png';
-import {useCallback, useEffect, useRef, useState} from 'react';
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 const renderGlobalNavIcon =
   ([icDefault, icActive, icFocused]: ImageSourcePropType[]) =>
@@ -85,8 +78,9 @@ const SIDEBAR_COLLAPSED_ROUTES = [
   GN_ITEMS.SEARCH,
   GN_ITEMS.SETTINGS,
   GN_ITEMS.SIGN_IN,
+  GN_ITEMS.NOW_WATCHING,
 ] as const;
-const SIDEBAR_HIDDEN_ROUTES = [GN_ITEMS.NOW_WATCHING] as const;
+const SIDEBAR_HIDDEN_ROUTES = [] as const;
 const SIDEBAR_DISABLED_ROUTES = [] as const;
 
 const getUnfocusedMode = (selectedItem?: GnItem) => {
@@ -104,15 +98,17 @@ const getUnfocusedMode = (selectedItem?: GnItem) => {
   }
 };
 export const GlobalNav = () => {
+  const [lockedMode, setLockedMode] = useState<SidebarMode | undefined>(
+    undefined,
+  );
+
   const [selectedItem, setSelectedItem] = useState<GnItem>(
     GN_ITEMS.NOW_WATCHING,
   );
   const [mode, setMode] = useState<SidebarMode>('hidden');
-  const focusOnExpandRef = useRef<TouchableOpacity>(null);
 
   const handleSidebarFocus = useCallback(() => {
     setMode('expanded');
-    focusOnExpandRef?.current?.focus();
   }, []);
 
   const handleSidebarBlur = useCallback(() => {
@@ -124,13 +120,29 @@ export const GlobalNav = () => {
   return (
     <View style={styles.wrapper}>
       <Sidebar
-        mode={mode}
+        mode={lockedMode || mode}
         onFocus={handleSidebarFocus}
         onBlur={handleSidebarBlur}>
         <Sidebar.Content>
+          <Sidebar.Item
+            isActive={false}
+            label={'LOCK'}
+            onPress={() => {
+              if (lockedMode) {
+                setLockedMode(undefined);
+              } else {
+                setLockedMode(mode);
+              }
+            }}
+            renderIcon={renderGlobalNavIcon([
+              nowWatchingGrey,
+              nowWatchingWhite,
+              nowWatchingBlack,
+            ])}
+          />
+
           <Sidebar.Gap />
           <Sidebar.Item
-            elRef={focusOnExpandRef}
             isActive={selectedItem === GN_ITEMS.NOW_WATCHING}
             label={'Now Watching'}
             onPress={() => {

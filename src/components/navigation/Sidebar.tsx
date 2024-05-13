@@ -1,17 +1,13 @@
 import {
-  Image,
   StyleSheet,
   TouchableOpacity,
   type TouchableOpacityProps,
   View,
   type ViewProps,
 } from 'react-native';
-import {
-  attachSubComponents,
-  scaleSize,
-} from '@website-monorepo/libs-util-core';
+import {attachSubComponents, scaleSize} from '../shared';
 
-import {
+import React, {
   createContext,
   memo,
   type ReactNode,
@@ -22,8 +18,8 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { chevronRightWhite } from '@website-monorepo/libs-ui-core';
-import { TVFocusGuideView } from '@amzn/react-native-kepler';
+
+import {TVFocusGuideView} from '@amzn/react-native-kepler';
 import Animated, {
   Easing,
   ReduceMotion,
@@ -31,7 +27,7 @@ import Animated, {
   withDelay,
   withTiming,
 } from '@amzn/react-native-reanimated';
-import { STYLE } from '../constants';
+import {STYLE} from '../constants';
 
 const CONTENT_ANIM = {
   DELAY: 100,
@@ -54,7 +50,6 @@ const Item = ({
   elRef,
   isActive,
   label,
-  children,
   renderIcon,
   ...touchableProps
 }: SidebarItemProps) => {
@@ -62,7 +57,7 @@ const Item = ({
   const sidebarContext = useSidebarContext();
   const mode = sidebarContext.mode;
   const IconComponent = useMemo(
-    () => renderIcon({ isActive, isFocused }),
+    () => renderIcon({isActive, isFocused}),
     [isFocused, isActive, renderIcon],
   );
 
@@ -77,7 +72,7 @@ const Item = ({
         reduceMotion: ReduceMotion.System,
       }),
     );
-  }, [mode]);
+  }, [labelWidth, mode]);
 
   return (
     <TouchableOpacity
@@ -91,27 +86,29 @@ const Item = ({
       ]}
       onFocus={(...args) => {
         setFocused(true);
-        if (touchableProps.onFocus) touchableProps.onFocus(...args);
+        if (touchableProps.onFocus) {
+          touchableProps.onFocus(...args);
+        }
       }}
       onBlur={(...args) => {
         setFocused(false);
-        if (touchableProps.onBlur) touchableProps.onBlur(...args);
-      }}
-    >
+        if (touchableProps.onBlur) {
+          touchableProps.onBlur(...args);
+        }
+      }}>
       <View
         style={[
           styles.itemIndicator,
           isActive && styles.itemIndicatorActive,
           isActive && isFocused && styles.itemIndicatorActiveFocused,
         ]}
-      ></View>
+      />
       <View
         style={[
           styles.itemIconContainer,
           isActive && styles.itemIconContainerActive,
           isFocused && styles.itemIconContainerFocused,
-        ]}
-      >
+        ]}>
         {IconComponent}
       </View>
       <View style={[styles.itemLabelContainer]}>
@@ -120,10 +117,9 @@ const Item = ({
             styles.itemLabel,
             isActive && styles.itemLabelActive,
             isFocused && styles.itemLabelFocused,
-            { maxWidth: labelWidth },
+            {maxWidth: labelWidth},
           ]}
-          numberOfLines={1}
-        >
+          numberOfLines={1}>
           {label}
         </Animated.Text>
       </View>
@@ -142,8 +138,8 @@ const Space = () => {
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 export type SidebarHandleProps = TouchableOpacityProps;
-const Handle = ({ ...touchableProps }: SidebarHandleProps) => {
-  const { mode } = useSidebarContext();
+const Handle = ({...touchableProps}: SidebarHandleProps) => {
+  const {mode} = useSidebarContext();
   const width = useSharedValue(0);
   const paddingRight = useSharedValue(0);
 
@@ -169,17 +165,15 @@ const Handle = ({ ...touchableProps }: SidebarHandleProps) => {
       style={[
         touchableProps.style,
         styles.handle,
-        { width, paddingRight, zIndex: mode === 'hidden' ? 0 : -1 },
+        {width, paddingRight, zIndex: mode === 'hidden' ? 0 : -1},
       ]}
-    >
-      <Image source={chevronRightWhite} style={styles.handleIcon} />
-    </AnimatedTouchable>
+    />
   );
 };
 
-export type SidebarContentProps = ViewProps & { children: ReactNode };
-const Content = ({ children, ...viewProps }: SidebarContentProps) => {
-  const { mode } = useSidebarContext();
+export type SidebarContentProps = ViewProps & {children: ReactNode};
+const Content = ({children, ...viewProps}: SidebarContentProps) => {
+  const {mode} = useSidebarContext();
   const width = useSharedValue(STYLE.GLOBAL_NAV_WIDTH);
   const borderWidth = useSharedValue(3);
   const paddingRight = useSharedValue(0);
@@ -203,10 +197,10 @@ const Content = ({ children, ...viewProps }: SidebarContentProps) => {
     );
     borderWidth.value = withDelay(
       modeWidth > 0 ? 0 : CONTENT_ANIM.DELAY + CONTENT_ANIM.DURATION,
-      withTiming(modeWidth > 0 ? 3 : 0, { duration: 1 }),
+      withTiming(modeWidth > 0 ? 3 : 0, {duration: 1}),
     );
     const pr = mode === 'expanded' ? scaleSize(48) : 0;
-    paddingRight.value = withTiming(pr, { duration: CONTENT_ANIM.DURATION });
+    paddingRight.value = withTiming(pr, {duration: CONTENT_ANIM.DURATION});
   }, [mode]);
 
   return (
@@ -216,9 +210,8 @@ const Content = ({ children, ...viewProps }: SidebarContentProps) => {
         styles.sidebar,
         mode === 'expanded' && styles.sidebarExpanded,
         viewProps.style,
-        { width, borderWidth, paddingRight: paddingRight },
-      ]}
-    >
+        {width, borderWidth, paddingRight: paddingRight},
+      ]}>
       {mode === 'disabled' ? null : children}
     </Animated.View>
   );
@@ -230,10 +223,12 @@ type SidebarTvFocusGuideProps = {
   onBlur?: () => void;
 };
 const SidebarTvFocusGuide = memo(
-  ({ children, onFocus, onBlur }: SidebarTvFocusGuideProps) => {
-    const { mode } = useSidebarContext();
+  ({children, onFocus, onBlur}: SidebarTvFocusGuideProps) => {
+    const {mode} = useSidebarContext();
 
-    if (mode === 'none') return null;
+    if (mode === 'none') {
+      return null;
+    }
     return (
       /*@ts-expect-error TVFocusGuideView types are broken*/
       <TVFocusGuideView
@@ -244,8 +239,7 @@ const SidebarTvFocusGuide = memo(
         onFocus={onFocus}
         onBlur={onBlur}
         trapFocusUp={true}
-        trapFocusDown={true}
-      >
+        trapFocusDown={true}>
         {children}
       </TVFocusGuideView>
     );
@@ -288,7 +282,7 @@ export const RootComponent = ({
   const deferredMode = useDeferredValue(mode);
 
   return (
-    <SidebarContext.Provider value={{ mode: deferredMode }}>
+    <SidebarContext.Provider value={{mode: deferredMode}}>
       <SidebarTvFocusGuide onFocus={onFocus} onBlur={onBlur}>
         {children}
       </SidebarTvFocusGuide>
@@ -408,7 +402,7 @@ const styles = StyleSheet.create({
 
 type RootComponentType = typeof RootComponent;
 
-const subComponents = { Item, Gap, Space, Handle, Content };
+const subComponents = {Item, Gap, Space, Handle, Content};
 type SubComponentsTypes = typeof subComponents;
 
 export const Sidebar = attachSubComponents<
