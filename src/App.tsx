@@ -11,6 +11,10 @@ import {
   createStackNavigator,
   StackScreenProps,
 } from '@amzn/react-navigation__stack';
+import {enableScreens} from '@amzn/react-native-screens';
+
+enableScreens();
+
 const Stack = createStackNavigator();
 
 type TScreen = StackScreenProps<any> & {title: string};
