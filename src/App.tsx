@@ -4,24 +4,23 @@
  * PROPRIETARY/CONFIDENTIAL.  USE IS SUBJECT TO LICENSE TERMS.
  */
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {NavigationContainer} from '@amzn/react-navigation__native';
 import {
   createStackNavigator,
   StackScreenProps,
 } from '@amzn/react-navigation__stack';
-import {
-  createDrawerNavigator,
-  DrawerScreenProps,
-} from '@amzn/react-navigation__drawer';
-
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
 
 type TScreen = StackScreenProps<any> & {title: string};
 const Screen = ({title, navigation}: TScreen) => {
   const styles = getStyles();
+
+  useEffect(() => {
+    console.log(`Screen mounted: ${title}`);
+    return () => console.log(`Screen UNmounted: ${title}`);
+  }, [title]);
 
   return (
     <View style={styles.container}>
@@ -59,47 +58,6 @@ const ScreenB = (props: StackScreenProps<any>) => {
   return <Screen title={'Screen B'} {...props} />;
 };
 
-const ScreenD1 = ({navigation}: DrawerScreenProps<any>) => {
-  const styles = getStyles();
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>'Screen D1'</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate('A');
-        }}>
-        <Text style={styles.buttonLabel}>Screen A</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const ScreenD2 = ({navigation}: DrawerScreenProps<any>) => {
-  const styles = getStyles();
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>'Screen D1'</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate('A');
-        }}>
-        <Text style={styles.buttonLabel}>Screen A</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const DrawerStack = () => {
-  return (
-    <Drawer.Navigator>
-      <Drawer.Screen name={'D1'} component={ScreenD1} />
-      <Drawer.Screen name={'D2'} component={ScreenD2} />
-    </Drawer.Navigator>
-  );
-};
-
 export const App = () => {
   return (
     <NavigationContainer>
@@ -110,7 +68,6 @@ export const App = () => {
           options={{title: 'screen A'}}
         />
         <Stack.Screen name="B" component={ScreenB} />
-        <Stack.Screen name="D" component={DrawerStack} />
       </Stack.Navigator>
     </NavigationContainer>
   );
