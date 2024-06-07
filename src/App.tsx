@@ -46,9 +46,9 @@ const Screen = ({title, navigation}: TScreen) => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          navigation.navigate('D', {screen: {id: 'D1'}});
+          navigation.navigate('C');
         }}>
-        <Text style={styles.buttonLabel}>Screen D1</Text>
+        <Text style={styles.buttonLabel}>Screen C</Text>
       </TouchableOpacity>
     </View>
   );
@@ -62,16 +62,22 @@ const ScreenB = (props: StackScreenProps<any>) => {
   return <Screen title={'Screen B'} {...props} />;
 };
 
+const ScreenC = (props: StackScreenProps<any>) => {
+  return <Screen title={'Screen C'} {...props} />;
+};
 export const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        // if set to true, the app will crash.
+        detachInactiveScreens={false}>
         <Stack.Screen
           name="A"
           component={ScreenA}
           options={{title: 'screen A'}}
         />
         <Stack.Screen name="B" component={ScreenB} />
+        <Stack.Screen name="C" component={ScreenC} />
       </Stack.Navigator>
     </NavigationContainer>
   );
